@@ -58,13 +58,28 @@ npm run pack:mac
 npm run release:github:check
 ```
 
-### 4. Create a GitHub Release
+### 4. Push a new version automatically
+
+After you bump `package.json` to a new version, run:
+
+```bash
+npm run release:publish
+```
+
+This will:
+
+- sync this project into the GitHub repo under `Scoring-Planner/`
+- push `main`
+- create and push a matching git tag like `v0.0.2`
+- trigger GitHub Actions to build the mac app and publish release assets
+
+### 5. Create a GitHub Release manually (optional fallback)
 
 Create a release on GitHub with a tag that matches the app version, for example:
 
 - `v0.0.1`
 
-### 5. Upload these files to the release
+### 6. Upload these files to the release
 
 - `.dmg`
 - `.dmg.blockmap`

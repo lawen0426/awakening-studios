@@ -1,0 +1,45 @@
+name: Release Scoring Planner
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: macos-latest
+
+    defaults:
+      run:
+        working-directory: Scoring-Planner
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Scoring-Planner/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and package macOS app
+        run: npm run pack:mac
+
+      - name: Publish GitHub Release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            Scoring-Planner/release/*.dmg
+            Scoring-Planner/release/*.dmg.blockmap
+            Scoring-Planner/release/*-mac.zip
+            Scoring-Planner/release/*-mac.zip.blockmap

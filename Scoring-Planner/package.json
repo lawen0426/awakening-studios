@@ -16,6 +16,7 @@
     "pack:mac": "npm run build && electron-builder --config electron-builder.config.cjs --mac dmg zip --arm64",
     "pack:mac:universal": "npm run build && electron-builder --config electron-builder.config.cjs --mac dmg zip --universal",
     "release:github:check": "node scripts/github-release-check.mjs",
+    "release:publish": "node scripts/publish-github-release.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
