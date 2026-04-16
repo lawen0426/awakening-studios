@@ -127,15 +127,15 @@ const copy = {
     language: 'Language',
     resetDefault: 'Reset to Default',
     resetConfirm: 'Current content will be lost. Reset this project to default settings?',
-    exportLibrary: 'Export Library',
-    importLibrary: 'Import Library',
+    exportLibrary: 'Export All Projects (.json)',
+    importLibrary: 'Import All Projects (.json)',
     libraryExportName: 'planner-library',
     importLibraryConfirm: 'Replace the current library with the imported file? This will overwrite all current projects.',
     invalidLibrary: 'This library file is not supported.',
-    exportCsv: 'Export CSV',
+    exportCsv: 'Export Project (.csv)',
     exportImage: 'Export Image',
     exportingImage: 'Exporting Image...',
-    importCsv: 'Import CSV',
+    importCsv: 'Import Project (.csv)',
     projects: 'Projects',
     projectName: 'Project Note',
     projectDescription: 'Project Description',
@@ -286,6 +286,8 @@ const copy = {
     authConfirmUseAnother: 'Use Another Email',
     menuAccount: 'Account',
     menuTeam: 'Team Sync',
+    menuImport: 'Import',
+    menuExport: 'Export',
     manageTeam: 'Manage Team',
     menuLibrary: 'Import / Export',
     menuDanger: 'Danger Zone',
@@ -324,15 +326,15 @@ const copy = {
     language: '语言',
     resetDefault: '回到默认选项',
     resetConfirm: '点了以后，现在内容会丢失。确认把当前项目恢复为默认吗？',
-    exportLibrary: '导出资料库',
-    importLibrary: '导入资料库',
+    exportLibrary: '导出全部项目（.json）',
+    importLibrary: '导入全部项目（.json）',
     libraryExportName: '周计划资料库',
     importLibraryConfirm: '要用导入文件替换当前资料库吗？这会覆盖当前所有项目。',
     invalidLibrary: '这个资料库文件暂不支持导入。',
-    exportCsv: '导出 CSV',
+    exportCsv: '导出项目（.csv）',
     exportImage: '导出图片',
     exportingImage: '正在导出图片...',
-    importCsv: '导入 CSV',
+    importCsv: '导入项目（.csv）',
     projects: '项目',
     projectName: '项目备注',
     projectDescription: '项目描述',
@@ -483,6 +485,8 @@ const copy = {
     authConfirmUseAnother: '换一个邮箱',
     menuAccount: '账号',
     menuTeam: '团队同步',
+    menuImport: '导入',
+    menuExport: '导出',
     manageTeam: '管理团队',
     menuLibrary: '导入 / 导出',
     menuDanger: '危险操作',
@@ -3618,42 +3622,78 @@ function App() {
                       <span className="action-menu-section-label">{text.menuLibrary}</span>
                     </div>
                     <div className="action-menu-group">
-                      <button
-                        type="button"
-                        className="action-menu-button"
-                        onClick={() => libraryInputRef.current?.click()}
-                      >
-                        {text.importLibrary}
-                      </button>
-                      <button
-                        type="button"
-                        className="action-menu-button"
-                        onClick={exportWorkspaceLibrary}
-                      >
-                        {text.exportLibrary}
-                      </button>
-                      <button
-                        type="button"
-                        className="action-menu-button"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        {text.importCsv}
-                      </button>
-                      <button
-                        type="button"
-                        className="action-menu-button"
-                        onClick={exportCurrentProject}
-                      >
-                        {text.exportCsv}
-                      </button>
-                      <button
-                        type="button"
-                        className="action-menu-button"
-                        onClick={exportCurrentViewImage}
-                        disabled={isExportingImage}
-                      >
-                        {isExportingImage ? text.exportingImage : text.exportImage}
-                      </button>
+                      <div className="action-menu-folder">
+                        <button
+                          type="button"
+                          className="action-menu-button action-menu-button--folder"
+                        >
+                          {text.menuImport}
+                        </button>
+                        <div className="action-submenu" role="menu">
+                          <button
+                            type="button"
+                            className="action-menu-button action-menu-button--nested"
+                            onClick={() => {
+                              setIsActionMenuOpen(false)
+                              libraryInputRef.current?.click()
+                            }}
+                          >
+                            {text.importLibrary}
+                          </button>
+                          <button
+                            type="button"
+                            className="action-menu-button action-menu-button--nested"
+                            onClick={() => {
+                              setIsActionMenuOpen(false)
+                              fileInputRef.current?.click()
+                            }}
+                          >
+                            {text.importCsv}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="action-menu-folder">
+                        <button
+                          type="button"
+                          className="action-menu-button action-menu-button--folder"
+                        >
+                          {text.menuExport}
+                        </button>
+                        <div className="action-submenu" role="menu">
+                          <button
+                            type="button"
+                            className="action-menu-button action-menu-button--nested"
+                            onClick={() => {
+                              setIsActionMenuOpen(false)
+                              exportWorkspaceLibrary()
+                            }}
+                          >
+                            {text.exportLibrary}
+                          </button>
+                          <button
+                            type="button"
+                            className="action-menu-button action-menu-button--nested"
+                            onClick={() => {
+                              setIsActionMenuOpen(false)
+                              exportCurrentProject()
+                            }}
+                          >
+                            {text.exportCsv}
+                          </button>
+                          <button
+                            type="button"
+                            className="action-menu-button action-menu-button--nested"
+                            onClick={() => {
+                              setIsActionMenuOpen(false)
+                              void exportCurrentViewImage()
+                            }}
+                            disabled={isExportingImage}
+                          >
+                            {isExportingImage ? text.exportingImage : text.exportImage}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                     <div className="action-menu-section action-menu-section--danger">
                       <span className="action-menu-section-label">{text.menuDanger}</span>

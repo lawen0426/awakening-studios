@@ -4,7 +4,7 @@
   "description": "A macOS desktop planner for film scoring schedules, weekly writing targets, and timeline tracking.",
   "author": "Luanhui",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {

@@ -1727,6 +1727,7 @@ td input {
   border-radius: 16px;
   background: #141414;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  overflow: visible;
 }
 
 .action-menu-wrapper {
@@ -1930,6 +1931,59 @@ td input {
   margin-top: 6px;
 }
 
+.action-menu-button--folder {
+  position: relative;
+}
+
+.action-menu-button--folder::after {
+  content: '›';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+}
+
+.action-menu-folder {
+  position: relative;
+}
+
+.action-submenu {
+  display: grid;
+  gap: 6px;
+  position: absolute;
+  top: 0;
+  left: calc(100% + 8px);
+  min-width: 228px;
+  padding: 10px;
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  background: #141414;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateX(-6px);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease,
+    visibility 120ms ease;
+  z-index: 45;
+}
+
+.action-menu-folder:hover > .action-submenu,
+.action-menu-folder:focus-within > .action-submenu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+.action-menu-button--nested {
+  background: var(--surface-2);
+  font-size: 0.94rem;
+}
+
 .action-menu-button--danger {
   border-color: rgba(179, 38, 30, 0.22);
   color: #f1c2bd;
@@ -2011,21 +2065,17 @@ td input {
   margin-top: 0;
 }
 
-.modal-card--team-manager {
-  width: min(760px, calc(100vw - 48px));
-  display: grid;
-  gap: 16px;
-}
-
 .team-manager-grid {
   display: grid;
-  grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
 }
 
 .team-manager-panel {
   display: grid;
   gap: 10px;
+  min-width: 0;
   padding: 14px;
   border: 1px solid var(--panel-border);
   border-radius: 16px;
@@ -2042,16 +2092,19 @@ td input {
 .team-manager-list {
   display: grid;
   gap: 10px;
+  min-width: 0;
 }
 
 .team-manager-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
+  min-width: 0;
   padding: 10px 12px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
 }
 
 .team-manager-meta {
@@ -2081,6 +2134,9 @@ td input {
   display: grid;
   justify-items: end;
   gap: 8px;
+  align-content: start;
+  min-width: 0;
+  flex-shrink: 0;
 }
 
 .team-manager-select {
@@ -2095,6 +2151,7 @@ td input {
 }
 
 .team-manager-badge {
+  justify-self: end;
   padding: 5px 9px;
   border: 1px solid rgba(214, 95, 85, 0.22);
   border-radius: 999px;
@@ -2102,6 +2159,30 @@ td input {
   color: #f3c9c4;
   font-size: 0.74rem;
   font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .modal-card--team-manager {
+    width: min(760px, calc(100vw - 24px));
+  }
+
+  .team-manager-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-manager-row {
+    grid-template-columns: 1fr;
+  }
+
+  .team-manager-actions {
+    justify-items: start;
+    min-width: 0;
+  }
+
+  .team-manager-badge {
+    justify-self: start;
+  }
 }
 
 .table-warning {
@@ -2137,6 +2218,16 @@ td input {
   border-radius: 18px;
   background: #141414;
   box-shadow: 0 24px 50px rgba(0, 0, 0, 0.45);
+}
+
+.modal-card.modal-card--team-manager {
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100vh - 56px);
+  display: grid;
+  gap: 16px;
+  overflow: auto;
+  position: relative;
+  z-index: 101;
 }
 
 .modal-actions {
