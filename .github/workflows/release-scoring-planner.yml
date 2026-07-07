@@ -54,6 +54,21 @@ jobs:
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
+      - name: Normalize release asset names
+        working-directory: ${{ steps.app-dir.outputs.dir }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          cd release
+          cp "Film Scoring Weekly Planner-${VERSION}-arm64-mac.zip" "Film-Scoring-Weekly-Planner-${VERSION}-arm64-mac.zip"
+          cp "Film Scoring Weekly Planner-${VERSION}-arm64-mac.zip.blockmap" "Film-Scoring-Weekly-Planner-${VERSION}-arm64-mac.zip.blockmap"
+          cp "Film Scoring Weekly Planner-${VERSION}-arm64.dmg" "Film-Scoring-Weekly-Planner-${VERSION}-arm64.dmg"
+          cp "Film Scoring Weekly Planner-${VERSION}-arm64.dmg.blockmap" "Film-Scoring-Weekly-Planner-${VERSION}-arm64.dmg.blockmap"
+          rm -f "Film Scoring Weekly Planner-${VERSION}-arm64-mac.zip" \
+            "Film Scoring Weekly Planner-${VERSION}-arm64-mac.zip.blockmap" \
+            "Film Scoring Weekly Planner-${VERSION}-arm64.dmg" \
+            "Film Scoring Weekly Planner-${VERSION}-arm64.dmg.blockmap"
+          ls -la
+
       - name: Publish GitHub Release assets
         uses: softprops/action-gh-release@v2
         with:
@@ -62,8 +77,8 @@ jobs:
           name: Scoring Planner ${{ steps.version.outputs.tag }}
           fail_on_unmatched_files: true
           files: |
-            ${{ steps.app-dir.outputs.dir }}/release/*.dmg
-            ${{ steps.app-dir.outputs.dir }}/release/*.dmg.blockmap
-            ${{ steps.app-dir.outputs.dir }}/release/*-mac.zip
-            ${{ steps.app-dir.outputs.dir }}/release/*-mac.zip.blockmap
+            ${{ steps.app-dir.outputs.dir }}/release/Film-Scoring-Weekly-Planner-${{ steps.version.outputs.version }}-arm64.dmg
+            ${{ steps.app-dir.outputs.dir }}/release/Film-Scoring-Weekly-Planner-${{ steps.version.outputs.version }}-arm64.dmg.blockmap
+            ${{ steps.app-dir.outputs.dir }}/release/Film-Scoring-Weekly-Planner-${{ steps.version.outputs.version }}-arm64-mac.zip
+            ${{ steps.app-dir.outputs.dir }}/release/Film-Scoring-Weekly-Planner-${{ steps.version.outputs.version }}-arm64-mac.zip.blockmap
             ${{ steps.app-dir.outputs.dir }}/release/latest-mac.yml
