@@ -2,8 +2,13 @@ name: Release Scoring Planner
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+    paths:
+      - 'Scoring-Planner/**'
+      - '.github/workflows/release-scoring-planner.yml'
   workflow_dispatch:
 
 permissions:
@@ -13,33 +18,52 @@ jobs:
   build-and-release:
     runs-on: macos-latest
 
-    defaults:
-      run:
-        working-directory: Scoring-Planner
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Resolve app directory
+        id: app-dir
+        run: |
+          if [ -f Scoring-Planner/package.json ]; then
+            echo "dir=Scoring-Planner" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Read version
+        id: version
+        working-directory: ${{ steps.app-dir.outputs.dir }}
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: Scoring-Planner/package-lock.json
 
       - name: Install dependencies
+        working-directory: ${{ steps.app-dir.outputs.dir }}
         run: npm ci
 
       - name: Build and package macOS app
+        working-directory: ${{ steps.app-dir.outputs.dir }}
         run: npm run pack:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Publish GitHub Release assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
+          tag_name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Scoring Planner ${{ steps.version.outputs.tag }}
+          fail_on_unmatched_files: true
           files: |
-            Scoring-Planner/release/*.dmg
-            Scoring-Planner/release/*.dmg.blockmap
-            Scoring-Planner/release/*-mac.zip
-            Scoring-Planner/release/*-mac.zip.blockmap
+            ${{ steps.app-dir.outputs.dir }}/release/*.dmg
+            ${{ steps.app-dir.outputs.dir }}/release/*.dmg.blockmap
+            ${{ steps.app-dir.outputs.dir }}/release/*-mac.zip
+            ${{ steps.app-dir.outputs.dir }}/release/*-mac.zip.blockmap
+            ${{ steps.app-dir.outputs.dir }}/release/latest-mac.yml
