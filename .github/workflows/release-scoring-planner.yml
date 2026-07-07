@@ -53,6 +53,8 @@ jobs:
         run: npm run pack:mac
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
+          VITE_SUPABASE_URL: https://thrqknbbrvkzsawjmhei.supabase.co
+          VITE_SUPABASE_ANON_KEY: sb_publishable_sGbKklWhqJ6RMKjfO4eqcA_jCdI_iRl
 
       - name: Normalize release asset names
         working-directory: ${{ steps.app-dir.outputs.dir }}
